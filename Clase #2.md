@@ -81,6 +81,12 @@ Al construir un modelo en Simscape Multibody, se emplean varios bloques fundamen
 ## Ejemplo de Construcción de un Modelo Simple
 
 Para ilustrar el uso de estos componentes, consideremos la construcción de un péndulo simple:
+  ![Figura 1](imagenes_apuntes_2/eje1.png) 
+  Figura 1. Diagrama de bloques en multibody de un pendulo.
+
+  
+  ![Figura 2](imagenes_apuntes_2/ejemplo1.png) 
+  Figura 2. simulacion del pendulo en multibody.
 
 1. **Definir el Marco Mundial:**
    - Colocar el bloque *World Frame* para establecer el sistema de coordenadas global.
@@ -88,13 +94,18 @@ Para ilustrar el uso de estos componentes, consideremos la construcción de un p
 2. **Configurar el Mecanismo:**
    - Añadir el bloque *Mechanism Configuration* y establecer la gravedad según las necesidades del modelo.
 
-3. **Crear el Brazo del Péndulo:**
-   - Utilizar un bloque *Brick Solid* para representar el brazo del péndulo, definiendo sus dimensiones y propiedades de masa.
+5. **Crear la base del pendulo:**
+   - Utilizar un bloque *Brick Solid* para representar la base Bloque "B", definiendo sus dimensiones y propiedades de masa.
 
-4. **Posicionar el Brazo:**
+4. **Crear el Brazo del Péndulo:**
+   - Utilizar un bloque *Brick Solid* para representar el brazo del péndulo Bloque "A", definiendo sus dimensiones y propiedades de masa.
+
+5. **Posicionar el Brazo:**
    - Emplear un bloque *Rigid Transform* para posicionar correctamente el brazo respecto al marco mundial.
 
-5. **Añadir la Articulación:**
+##
+
+6. **Añadir la Articulación:**
    - Conectar el brazo al marco mundial mediante un bloque *Revolute Joint*, permitiendo que el brazo gire alrededor de un eje fijo.
 
 Este flujo de trabajo básico puede ampliarse para modelar sistemas más complejos, incorporando múltiples cuerpos, articulaciones y transformaciones según sea necesario.
