@@ -283,10 +283,335 @@ biela_manivela_simscape:
 
 # Diseño de Transmisión - Control de Movimiento
    
+## Requerimientos Clave del Diseño
+
+1. **Torque del motor:** Asegurarse de que sea mayor que el requerido por la aplicación (¡con margen de seguridad!).
+2. **Inercia:** Debe existir un equilibrio adecuado entre la inercia del motor y la de la carga.
+3. **Criterios adicionales:** También se debe considerar costo, precisión, tiempo de ciclo, etc.
+
+---
+
+## Fundamentos: Inercia y Torque Reflejado
+
+### ¿Qué es la Inercia?
+
+Es la resistencia de un cuerpo a cambiar su velocidad angular. Es como la masa, pero en el mundo rotacional.
+
+> **Fórmula fundamental de dinámica rotacional:**
+> 
+$$\sum T = J \cdot \alpha$$
+- `T` es el torque.
+- `J` es la inercia.
+- `α` es la aceleración angular.
+
+- ## Transmisión por Engranajes
+
+### Relación de Engranajes
+
+Esta se define por el número de dientes. Influye en:
+
+- El **torque**
+- La **velocidad angular**
+
+En sistemas reales se usa para amplificar o reducir estos parámetros.
+
+## Simulación en MATLAB (Simscape Multibody)
+
+### Paso a Paso para Crear una Simulación:
+
+1. **Abrir Simulink** y buscar `Simscape Multibody`.
+2. Insertar componentes como `Solid`, `Revolute Joint`, y `Gear Constraint`.
+3. Configurar la **relación de engranaje** (por ejemplo, 5:1).
+4. Agregar sensores para medir velocidad, torque, y posición angular.
+5. Ejecutar la simulación y observar la animación.
+6. Analizar cómo la inercia reflejada varía con la transmisión.
+
+## Inercia Reflejada
+
+Cuando usamos un sistema con engranajes, la **inercia de la carga** se "refleja" al eje del motor dependiendo de la relación de transmisión.
+
+ **Acople directo:**
+
+ $$J_{total} = J_{motor} + J_{carga}$$
+ 
+ **Con engranajes:**
+ $$J_{reflejada} = J_{carga} / (N^2) $$
+ 
+- `N` es la relación de engranaje (por ejemplo, 5 si es 5:1).
+
+---
+
+## Torque Reflejado
+
+Al igual que la inercia, el torque también se transforma con la relación de engranajes:
+
+**Fórmula:**
+$$T_{reflejado} = T_{carga} / N$$
+
+## Eficiencia del Sistema
+
+En sistemas reales, hay pérdidas. La eficiencia `η` se define como:
+
+**Fórmula de potencia:**
+$$P = T * ω$$
+
+Y entonces: $η = P_{salida} / P_{entrada}$
+
+## Inercia Total Reflejada al Eje del Motor
+
+Lo ideal es calcular toda la inercia reflejada al eje del motor para dimensionar correctamente el sistema.
+
+## Relación de Inercia
+
+Es una comparación entre la inercia de la carga y la del motor.
+
+**Fórmula:**$Relación_{inercia} = J_{carga}_{reflejada} / J_{motor}$
+
+## Ejemplo (Interpretado):
+
+- **Relación de engranaje**: $5:1$ (reductor)
+- **Inercia reflejada del engranaje**: $0.15\ \text{Kg} \cdot \text{cm}^2 = 1.5 \times 10^{-5}\ \text{Kg} \cdot \text{m}^2$
+- **Eficiencia del engranaje**: $97\%$
+- **Inercia del rotor del motor**: $1.5 \times 10^{-5}\ \text{Kg} \cdot \text{m}^2$
+- **Inercia de la carga (lado de la carga)**: $1.0 \times 10^{-3}\ \text{Kg} \cdot \text{m}^2$
+
+**Relación de inercia:**
+### Cálculo de inercia reflejada y relación de inercias
+
+$$
+J_{\text{carga reflejada}} = \frac{J_{\text{carga}}}{N^2}
+$$
+
+$$
+J_{\text{carga reflejada}} = \frac{1.0 \times 10^{-3}}{5^2} = 4.0 \times 10^{-5}\ \text{Kg} \cdot \text{m}^2
+$$
+
+#### Relación de inercia entre carga reflejada y rotor del motor
+
+$$
+\text{Relación de inercia} = \frac{J_{\text{carga reflejada}}}{J_{\text{motor}}} = \frac{4.0 \times 10^{-5}}{1.5 \times 10^{-5}} \approx 2.67
+$$
+
+## Recomendaciones de Diseño (Guías Prácticas)
+
+| Relación de Inercia | Rango        | Casos de Uso                    | Posibles Problemas         |
+|---------------------|--------------|----------------------------------|----------------------------|
+| Baja                | 1 - 2        | Movimientos rápidos              | Motor sobredimensionado    |
+| Alta                | > 10         | Dinámicas no críticas            | Baja eficiencia, torque bajo |
+
+Tabla 1. Relación de Inercia
+
+
+## Polea-Correa
+
+### ¿Qué es?
+
+Es un sistema que transforma movimiento rotacional de un eje a otro usando una correa. Se compone de dos poleas conectadas por una correa que puede ser **lisa** o **dentada**. La relación de transmisión se define por los radios de las poleas.
+
+---
+
+### Relación de transmisión
+
+Se basa en que la velocidad lineal de la correa es la misma en ambas poleas.
+
+**Fórmula:**
+$$v_1 = v_2 \Rightarrow \omega_1 \cdot r_1 = \omega_2 \cdot r_2$$
+
+### Simulación en Simscape (Polea-Correa)
+
+#### Paso a paso:
+
+1. Abrir **Simulink** y crear un nuevo modelo.
+2. Agregar un bloque de `Belt Drive` desde la biblioteca de `Simscape`.
+3. Conectar dos `Rotational Motion Sources` y dos `Inertias`.
+4. Establecer los radios de las poleas (`r1` y `r2`).
+5. Ejecutar la simulación para observar cómo se transmite la velocidad angular.
+
+###  Inercia Reflejada en Correa
+
+La inercia reflejada de la correa se comporta igual que en los engranajes. Se modela como una masa rotatoria.
+
+**Fórmula:**
+ $$J_{\text{belt} \rightarrow \text{in}} = \left( \frac{W_{\text{belt}}}{g \cdot \eta} \right) \cdot r_{\text{ip}}^2$$
+
+### Torque de carga
+
+El torque reflejado del sistema también se comporta como en engranajes:
+
+**Fórmula (implícita en engranajes):**
+$$T_{\text{ref}} = \frac{T_{\text{load}}}{N}$$
+
+## Tornillo Guía
+
+### ¿Qué es?
+
+Es un sistema que convierte **movimiento rotacional en lineal**, usado en máquinas CNC, actuadores lineales, impresoras 3D, etc.
+
+Hay dos tipos comunes:
+
+- Tornillos **ACME** (eficiencia: 35% – 85%)
+- Tornillos **de bolas** (eficiencia: 85% – 95%)
+
+### Relación de transmisión (Tornillo)
+
+La relación entre el movimiento angular del tornillo y el movimiento lineal de la carga está dada por el paso (lead) $p$.
+
+**Fórmulas:**
+
+$$\frac{\Delta \theta}{\Delta x} = \frac{2\pi}{p}$$
+$$\frac{\dot{\theta}}{\dot{x}} = \frac{2\pi}{p}$$
+
+### 🔧 Simulación en Simscape (Tornillo Guía)
+
+#### Paso a paso:
+
+1. Abrir Simulink y seleccionar `Simscape Multibody`.
+2. Añadir un bloque `Lead Screw`.
+3. Configurar el paso del tornillo (`Lead`) en metros por revolución.
+4. Agregar una masa lineal (`Prismatic Joint`) y una fuerza de carga.
+5. Ejecutar la simulación para ver el desplazamiento.
+
+#### Resultado de ejemplo:
+
+$$117.8\ \text{rad} \cdot \left( \frac{1\ \text{rev}}{2\pi\ \text{rad}} \right) \cdot 0.015\ \text{m/rev} = 0.28\ \text{m}$$
+
+###  Inercia reflejada
+
+Cuando la carga se mueve linealmente, su energía cinética puede expresarse como rotacional, reflejándola al eje del motor.
+
+**Fórmula de inercia del tornillo:**
+
+$$J_{\text{screw}} = \frac{\pi \cdot L \cdot \rho \cdot D^4}{32}$$
+
+### Torque de carga
+
+Para calcular el torque reflejado hacia el motor desde la carga, se tiene en cuenta:
+
+- El **coeficiente de fricción**
+- Si la **fuerza gravitacional** actúa o no (depende de la inclinación del sistema)
+
+### Ejemplo interpretado
+
+- **Carga**: $50\ \text{kg}$
+- **Tornillo**: esferado  
+- **Densidad**: $0.14\ \text{kg/cm}^3 = 140000\ \text{kg/m}^3$
+- **Diámetro**: $0.182\ \text{cm} = 0.00182\ \text{m}$
+- **Longitud**: $36\ \text{cm} = 0.36\ \text{m}$
+- **Paso**: $0.75\ \text{cm/rev} = 0.0075\ \text{m/rev}$
+- **Eficiencia**: $90\% = 0.9$
+- **Peso del carro**: $0.23\ \text{kg}$
+
+> **Cálculo de inercia del tornillo:**
+
+$$J_{\text{screw}} = \frac{\pi \cdot 0.36 \cdot 140000 \cdot (0.00182)^4}{32} = 5.42 \times 10^{-8}\ \text{Kg} \cdot \text{m}^2$$
+
+> **Inercia reflejada total:**
+
+$$J_{\text{ref, trans}} = 5.42 \times 10^{-8} + \left( \frac{1}{0.9 \cdot 8.382} \right) \cdot \left( \frac{50 + 0.23}{9.89} \right) = 8.1\ \text{Kg} \cdot \text{m}^2$$
+
+# Elementos de Transmisión (Parte 3)
+
+## Piñón - Cremallera
+
+### ¿Qué es?
+
+Es un mecanismo que convierte **movimiento rotacional en movimiento lineal**. El piñón (rueda dentada) se acopla a la cremallera (guía lineal dentada). Muy usado en CNC, robótica y actuadores.
+
+### Relación de transmisión
+
+Se basa en la velocidad lineal que genera el piñón al girar.
+
+**Fórmulas:**
+
+$$V_{\text{rack}} = r_{\text{pinion}} \cdot \omega_{\text{pinion}}$$
+
+$$N = \frac{\text{Velocidad}_{\text{motor}}}{\text{Velocidad}_{\text{carga}}}$$
+
+*Importante:* $\omega_{\text{pinion}}$ debe estar en rad/s.
+
+### Simulación en Simscape (Piñón-Cremallera)
+
+#### Paso a paso:
+
+1. Abrir Simulink y seleccionar `Simscape > Multibody`.
+2. Insertar `Rack and Pinion Constraint`.
+3. Conectar un `Revolute Joint` al piñón y un `Prismatic Joint` a la cremallera.
+4. Configurar el radio del piñón.
+5. Agregar sensores para medir posición y velocidad.
+6. Ejecutar la simulación y observar la conversión rotacional-lineal.
+
+### Inercia reflejada
+
+Funciona igual que con el tornillo guía. La masa lineal de la cremallera se puede reflejar como inercia al eje del motor.
+
+### Torque de carga
+
+El torque que el motor necesita depende de la fuerza que se necesita en la cremallera y del radio del piñón:
+
+**Fórmula base (implícita):**
+
+$$T = F \cdot r$$
+
+
+## Banda Transportadora
+
+### ¿Qué es?
+
+Es un sistema que **transforma el movimiento rotacional de un eje en movimiento lineal continuo**, usando una banda plana. Usada en líneas de producción y robótica móvil.
+
+
+### Relación de transmisión
+
+Se determina por el radio del eje motriz y su velocidad angular.
+
+**Fórmulas:**
+
+$$V_{\text{belt}} = r_{\text{ip}} \cdot \omega_{\text{ip}}$$
+
+$$N = \frac{\text{Velocidad}_{\text{motor}}}{\text{Velocidad}_{\text{carga}}}$$
+
+
+### Inercia reflejada y torque de carga
+
+Las bandas se modelan igual que los tornillos guía, por lo tanto la inercia reflejada sigue una relación similar.
+
+**Fórmula:**
+
+$$J_{\text{IP}} = J_{\text{LP}} = J_p$$
+
+
+### Consideraciones con bandas más largas
+
+Cuando hay varios rodillos locos, la banda es más larga y la carga se distribuye. Esto afecta la **relación de transmisión** y la **inercia reflejada**.
+
+
+### Torque de carga con ángulo
+
+Cuando la banda sube o baja en un ángulo, se considera el efecto del peso proyectado en la dirección del movimiento, afectando el torque requerido.
+
+
+## Simulación en Simscape (Banda Transportadora)
+
+#### Paso a paso:
+
+1. Abrir Simulink y crear un nuevo modelo.
+2. Usar bloques como `Rotational Motion Source`, `Pulley`, `Belt`, `Mass`, y `Prismatic Joint`.
+3. Configurar los radios y masas involucradas.
+4. Agregar sensores para registrar velocidades, fuerzas y posición.
+5. Ejecutar la simulación.
+6. Observar cómo la banda transmite el movimiento.
+
 
 conclusiones:
+
    Se comprendió el principio de conversión de movimiento rotacional en movimiento lineal mediante el mecanismo biela-manivela, observando cómo la rotación continua de una manivela genera un movimiento alternativo en el émbolo. 
+   
    La implementación en Simscape Multibody permite visualizar claramente la cinemática del sistema, identificando cómo interactúan las juntas rotacionales y prismáticas para permitir el movimiento deseado.
+   
    Se reforzó el uso adecuado de bloques fundamentales como "Solid", "Revolute Joint", "Prismatic Joint" y "Rigid Transform", así como la importancia de alinear correctamente los ejes de movimiento entre cada componente.
+   
    El uso de sensores y bloques de visualización como "Scope" o "Mechanics Explorer" permitió analizar gráficamente el comportamiento dinámico del sistema, facilitando su validación.
+   
    Este ejercicio sirvió como base para modelar sistemas mecánicos más complejos, permitiendo aplicar principios de diseño mecánico, simulación y análisis en un entorno virtual antes de su implementación física.
+
+   A lo largo de este estudio, se ha aprendido que los sistemas de transmisión como el piñón-cremallera, el tornillo guía y la banda transportadora convierten el movimiento rotacional en lineal, y que su relación de transmisión depende del radio y la velocidad angular de los componentes motrices. Además, se comprendió el concepto de inercia reflejada, que permite modelar la energía cinética de la carga como rotacional y reflejarla al motor, y cómo el torque de carga está determinado por la fuerza necesaria para mover la carga y el radio del componente. La simulación en Simscape se destacó como una herramienta esencial para modelar estos sistemas, validar su comportamiento y medir variables clave como velocidad, posición y fuerzas. También se aprendió que factores como la geometría, la eficiencia y la longitud de la banda afectan el rendimiento y la distribución de la carga en sistemas más complejos. En general, se adquirió una comprensión profunda de cómo estos mecanismos operan y cómo se pueden optimizar para mejorar el rendimiento en aplicaciones industriales y robóticas.
