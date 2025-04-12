@@ -1,6 +1,4 @@
-### Clase #2
 
----
 
 # MATLAB, Simscape y Multibody
 
