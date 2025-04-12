@@ -2,13 +2,13 @@
 
 ---
 
-los apuntes se dividen en 3 
+Los apuntes se dividen en 3 
 -
--perfiles de movimiento
+-Perfiles de movimiento
 -
--lo visto en matlab Multibody
+-Lo visto en matlab Multibody
 -
--control cascada 
+-Control cascada 
 --
 Andrey Samir Romero Buitrago 87382
 -
